@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Entity\Menu;
-use App\Entity\Gestionnaire;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CommandeRepository;
 use ApiPlatform\Core\Annotation\ApiFilter;
@@ -15,13 +14,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 #[ApiResource(
-    collectionOperations:["GET","POST"],
-    itemOperations:["GET","PUT"],
-    subresourceOperations:[
-        "api_clients_commandes_get_subresource"=>[
-            "normalization_context"=>['groups' => ['cmd_subresource']]
-        ]
-    ],
     normalizationContext: ['groups' => ['cmd_read']],
 
 )]
@@ -33,15 +25,15 @@ class Commande
     #[ORM\Column(type: 'integer')]
     private $id;
     
-    #[Groups(["type_read", "cmd_read", 'cmd_read'])]
+    #[Groups(["type_read", "cmd_read"])]
     #[ORM\Column(type: 'datetime')]
     private $commandeAt;
 
-    #[Groups(["cmd_read", 'cmd_read'])]
+    #[Groups(["cmd_read"])]
     #[ORM\ManyToMany(targetEntity: Menu::class, inversedBy: 'commandes')]
     private $menus;
 
-    #[Groups(["cmd_read", 'cmd_read'])]
+    #[Groups(["cmd_read"])]
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'commandes')]
     private $products;
 
@@ -89,7 +81,7 @@ class Commande
     public function getTotalMenu():int
     {
         return array_reduce($this->menus->toArray(), function($total,$menu){
-            return $total + $menu->getPrice();
+            return $total + $this->menu->getPrice();
             
         },0);
     }
@@ -97,9 +89,11 @@ class Commande
     #[Groups(["cmd_read"])]
     public function getTotal():int
     {
-        return $this->getTotalProd() + $this->getTotalMenu();
+        return array_reduce($this->products->toArray(), function($total,$product){
+            return $total + $product->getPrix() +$this->menus->getPrice();
+            
+        },0);
     }
-
 
     /**
      * @return Collection<int, Product>
@@ -143,7 +137,6 @@ class Commande
         return $this->products;
     }
 
-    #[Groups(["cmd_read"])]
     public function getGestionnaire(): ?Gestionnaire
     {
         return $this->gestionnaire;

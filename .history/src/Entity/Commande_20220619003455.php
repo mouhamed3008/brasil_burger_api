@@ -15,13 +15,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
 #[ApiResource(
-    collectionOperations:["GET","POST"],
-    itemOperations:["GET","PUT"],
-    subresourceOperations:[
-        "api_clients_commandes_get_subresource"=>[
-            "normalization_context"=>['groups' => ['cmd_subresource']]
-        ]
-    ],
     normalizationContext: ['groups' => ['cmd_read']],
 
 )]
@@ -33,15 +26,15 @@ class Commande
     #[ORM\Column(type: 'integer')]
     private $id;
     
-    #[Groups(["type_read", "cmd_read", 'cmd_read'])]
+    #[Groups(["type_read", "cmd_read"])]
     #[ORM\Column(type: 'datetime')]
     private $commandeAt;
 
-    #[Groups(["cmd_read", 'cmd_read'])]
+    #[Groups(["cmd_read"])]
     #[ORM\ManyToMany(targetEntity: Menu::class, inversedBy: 'commandes')]
     private $menus;
 
-    #[Groups(["cmd_read", 'cmd_read'])]
+    #[Groups(["cmd_read"])]
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'commandes')]
     private $products;
 
@@ -100,6 +93,10 @@ class Commande
         return $this->getTotalProd() + $this->getTotalMenu();
     }
 
+    public function getUser():Gestionnaire
+    {
+        return $this->gestionnaire->getUser();
+    }
 
     /**
      * @return Collection<int, Product>
@@ -143,7 +140,6 @@ class Commande
         return $this->products;
     }
 
-    #[Groups(["cmd_read"])]
     public function getGestionnaire(): ?Gestionnaire
     {
         return $this->gestionnaire;

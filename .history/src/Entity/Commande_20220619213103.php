@@ -41,7 +41,7 @@ class Commande
     #[ORM\ManyToMany(targetEntity: Menu::class, inversedBy: 'commandes')]
     private $menus;
 
-    #[Groups(["cmd_read", 'cmd_read'])]
+    #[Groups(["cmd_read"])]
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'commandes')]
     private $products;
 

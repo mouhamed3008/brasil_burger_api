@@ -19,7 +19,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
     itemOperations:["GET","PUT"],
     subresourceOperations:[
         "api_clients_commandes_get_subresource"=>[
-            "normalization_context"=>['groups' => ['cmd_subresource']]
+            "normalization_context"=>['groups' => ['cmd_read']]
         ]
     ],
     normalizationContext: ['groups' => ['cmd_read']],
@@ -33,15 +33,15 @@ class Commande
     #[ORM\Column(type: 'integer')]
     private $id;
     
-    #[Groups(["type_read", "cmd_read", 'cmd_read'])]
+    #[Groups(["type_read", "cmd_read"])]
     #[ORM\Column(type: 'datetime')]
     private $commandeAt;
 
-    #[Groups(["cmd_read", 'cmd_read'])]
+    #[Groups(["cmd_read"])]
     #[ORM\ManyToMany(targetEntity: Menu::class, inversedBy: 'commandes')]
     private $menus;
 
-    #[Groups(["cmd_read", 'cmd_read'])]
+    #[Groups(["cmd_read"])]
     #[ORM\ManyToMany(targetEntity: Product::class, inversedBy: 'commandes')]
     private $products;
 
