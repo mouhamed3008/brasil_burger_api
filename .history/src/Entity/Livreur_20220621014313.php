@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Entity\User;
+use App\Entity\Personne;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\LivreurRepository;
 use ApiPlatform\Core\Annotation\ApiResource;

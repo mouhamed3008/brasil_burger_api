@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Personne;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use ApiPlatform\Core\Annotation\ApiResource;
@@ -13,31 +14,26 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\Table(name: '`user`')]
 #[ORM\InheritanceType("JOINED")]
 #[ORM\DiscriminatorColumn(name:"type", type:"string")]
-#[ORM\DiscriminatorMap(["gestionnaire"=>"Gestionnaire", "client"=>"Client", "livreur"=>"Livreur"])]
+#[ORM\DiscriminatorMap(["gestionnaire"=>"Gestionnaire", "client"=>"Client"])]
 #[ApiResource()]
 
-class User  implements UserInterface, PasswordAuthenticatedUserInterface
+class User extends Personne implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    #[Groups(["client_read", "gestion_read"])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     protected $id;
-
-    #[Groups(["client_read", "gestion_read"])]
+    
+    #[Groups(["client_read"])]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     protected $email;
 
-    #[Groups(["client_read","gestion_read"])]
+    #[Groups(["client_read"])]
     #[ORM\Column(type: 'json')]
     protected $roles = [];
 
     #[ORM\Column(type: 'string')]
     protected $password;
-
-    #[Groups(["client_read","cmd_read"])]
-    #[ORM\Column(type: 'string', length: 255)]
-    private $telephone;
     
 
     #[Groups(["gestion_read", "client_read"])]
@@ -116,65 +112,5 @@ class User  implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
-    }
-
-    /**
-     * Get the value of telephone
-     */ 
-    public function getTelephone()
-    {
-        return $this->telephone;
-    }
-
-    /**
-     * Set the value of telephone
-     *
-     * @return  self
-     */ 
-    public function setTelephone($telephone)
-    {
-        $this->telephone = $telephone;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of nom
-     */ 
-    public function getNom()
-    {
-        return $this->nom;
-    }
-
-    /**
-     * Set the value of nom
-     *
-     * @return  self
-     */ 
-    public function setNom($nom)
-    {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of prenom
-     */ 
-    public function getPrenom()
-    {
-        return $this->prenom;
-    }
-
-    /**
-     * Set the value of prenom
-     *
-     * @return  self
-     */ 
-    public function setPrenom($prenom)
-    {
-        $this->prenom = $prenom;
-
-        return $this;
     }
 }
