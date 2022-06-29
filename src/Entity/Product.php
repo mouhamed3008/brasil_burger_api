@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['product_read']],
+    denormalizationContext: ['groups' => ['product:write']]
 )]
 
 class Product
@@ -22,14 +23,15 @@ class Product
     #[Groups(["product_read","gestion_read"])]
     private $id;
 
-    #[Groups(["product_read","gestion_read","menu_read", "cmd_read"])]
+    #[Groups(["product_read","gestion_read","menu_read", "cmd_read", "type_read", "product:write"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $libelle;
 
-    #[Groups(["product_read","gestion_read","menu_read", "cmd_read"])]
+    #[Groups(["product_read","gestion_read","menu_read", "cmd_read", "product:write"])]
     #[ORM\Column(type: 'integer')]
     private $prix;
 
+    #[Groups(["product_read","gestion_read","menu_read", "cmd_read", "product:write"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $photo;
 
@@ -40,7 +42,7 @@ class Product
     #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'products')]
     private $commandes;
 
-    #[Groups(["product_read"])]
+    #[Groups(["product_read", "product:write"])]
     #[ORM\ManyToOne(targetEntity: Type::class, inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     private $type;
@@ -49,6 +51,11 @@ class Product
     #[ORM\ManyToOne(targetEntity: Gestionnaire::class, inversedBy: 'products')]
     #[ORM\JoinColumn(nullable: false)]
     private $gestionnaire;
+
+    #[ORM\Column(type: 'boolean')]
+    private $is_active;
+
+
 
     public function __construct()
     {
@@ -158,4 +165,18 @@ class Product
 
         return $this;
     }
+
+    public function isIsActive(): ?bool
+    {
+        return $this->is_active;
+    }
+
+    public function setIsActive(bool $is_active): self
+    {
+        $this->is_active = $is_active;
+
+        return $this;
+    }
+
+  
 }
