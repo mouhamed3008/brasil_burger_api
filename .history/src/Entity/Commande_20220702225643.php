@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Menu;
 use App\Entity\Gestionnaire;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CommandeRepository;
@@ -21,7 +22,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
     denormalizationContext: ['groups' => ['cmd:write']]
 
 )]
-#[ApiFilter(SearchFilter::class,properties:["libelle"=>"partial","lastname","customer"])]
+#[ApiFilter(SearchFilter::class,properties:["menu.libelle"=>"partial","lastname","customer"])]
 class Commande
 {
     #[ORM\Id]
@@ -54,6 +55,7 @@ class Commande
     public function __construct()
     {
         $this->commandeAt = new \DateTime();
+        $this->menus = new ArrayCollection();
         $this->products = new ArrayCollection();
     }
 
@@ -82,11 +84,18 @@ class Commande
         },0);
     }
 
+    public function getTotalMenu():int
+    {
+        return array_reduce($this->menus->toArray(), function($total,$menu){
+            return $total + $menu->getPrice();
+            
+        },0);
+    }
 
     #[Groups(["cmd_read"])]
     public function getTotal():int
     {
-        return $this->getTotalProd() ;
+        return $this->getTotalProd() + $this->getTotalMenu();
     }
 
 
@@ -100,7 +109,29 @@ class Commande
 
 
 
-   
+    /**
+     * @return Collection<int, Menu>
+     */
+    public function getMenus(): Collection
+    {
+        return $this->menus;
+    }
+
+    public function addMenu(Menu $menu): self
+    {
+        if (!$this->menus->contains($menu)) {
+            $this->menus[] = $menu;
+        }
+
+        return $this;
+    }
+
+    public function removeMenu(Menu $menu): self
+    {
+        $this->menus->removeElement($menu);
+
+        return $this;
+    }
 
     /**
      * @return Collection<int, Product>

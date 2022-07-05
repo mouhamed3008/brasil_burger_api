@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Menu;
 use App\Entity\Gestionnaire;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\CommandeRepository;
@@ -21,7 +22,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
     denormalizationContext: ['groups' => ['cmd:write']]
 
 )]
-#[ApiFilter(SearchFilter::class,properties:["libelle"=>"partial","lastname","customer"])]
+#[ApiFilter(SearchFilter::class,properties:["menu.libelle"=>"partial","lastname","customer"])]
 class Commande
 {
     #[ORM\Id]

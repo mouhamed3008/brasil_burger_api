@@ -50,11 +50,9 @@ class Product
     #[ORM\JoinColumn(nullable: false)]
     private $gestionnaire;
 
-    #[Groups(["product_read","gestion_read", "cmd_read", "product:write"])]
     #[ORM\Column(type: 'boolean')]
     private $is_active=1;
 
-    #[Groups(["product_read","gestion_read", "cmd_read", "product:write"])]
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'products')]
     private $menu;
 

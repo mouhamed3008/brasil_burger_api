@@ -2,6 +2,7 @@
 namespace App\DataProvider;
 
 use App\Entity\Catalogue;
+use App\Repository\MenuRepository;
 use App\Repository\ProductRepository;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;

@@ -50,25 +50,17 @@ class Product
     #[ORM\JoinColumn(nullable: false)]
     private $gestionnaire;
 
-    #[Groups(["product_read","gestion_read", "cmd_read", "product:write"])]
     #[ORM\Column(type: 'boolean')]
-    private $is_active=1;
+    private $is_active;
 
-    #[Groups(["product_read","gestion_read", "cmd_read", "product:write"])]
-    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'products')]
-    private $menu;
-
-    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'menu')]
-    private $products;
-
+    #[ORM\ManyToMany(targetEntity: Menu::class, mappedBy: 'products')]
+    private $menus;
 
 
 
     public function __construct()
     {
         $this->commandes = new ArrayCollection();
-        $this->menu = new ArrayCollection();
-        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -157,57 +149,6 @@ class Product
     public function setIsActive(bool $is_active): self
     {
         $this->is_active = $is_active;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getMenu(): Collection
-    {
-        return $this->menu;
-    }
-
-    public function addMenu(self $menu): self
-    {
-        if (!$this->menu->contains($menu)) {
-            $this->menu[] = $menu;
-        }
-
-        return $this;
-    }
-
-    public function removeMenu(self $menu): self
-    {
-        $this->menu->removeElement($menu);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    public function addProduct(self $product): self
-    {
-        if (!$this->products->contains($product)) {
-            $this->products[] = $product;
-            $product->addMenu($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProduct(self $product): self
-    {
-        if ($this->products->removeElement($product)) {
-            $product->removeMenu($this);
-        }
 
         return $this;
     }

@@ -58,6 +58,7 @@ class Product
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'products')]
     private $menu;
 
+    #[Groups(["product_read","gestion_read", "cmd_read", "product:write"])]
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'menu')]
     private $products;
 

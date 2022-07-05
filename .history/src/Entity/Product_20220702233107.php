@@ -54,7 +54,6 @@ class Product
     #[ORM\Column(type: 'boolean')]
     private $is_active=1;
 
-    #[Groups(["product_read","gestion_read", "cmd_read", "product:write"])]
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'products')]
     private $menu;
 
