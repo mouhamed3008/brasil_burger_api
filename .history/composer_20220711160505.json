@@ -84,6 +84,10 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "compile": [
+            "php bin/console doctrine:schema:update --force"
+
         ]
     },
     "conflict": {
